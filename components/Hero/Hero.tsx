@@ -1,5 +1,7 @@
+"use client";
 import { Share_Tech } from "next/font/google";
 import Link from "next/link";
+import { motion } from "framer-motion";
 
 const knewave = Share_Tech({
   weight: "400",
@@ -12,9 +14,14 @@ const Hero = () => {
       className={`${knewave.className} h-screen bg-[url('/assets/hero.jpg')] bg-cover bg-center flex flex-col justify-center items-center text-center mt-6`}
     >
       <div className="px-8">
-        <h1 className="text-5xl md:text-8xl text-[#fad345] font-extrabold mb-4">
+        <motion.h1
+          initial={{ opacity: 0, x: -50 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5 }}
+          className="text-5xl md:text-8xl text-[#fad345] font-extrabold mb-4"
+        >
           Welcome to Your New Favorite Dining Experience
-        </h1>
+        </motion.h1>
         <p className="text-lg md:text-xl text-white mb-8">
           Discover a culinary journey that delights your senses. Join us for an
           unforgettable meal in a warm and inviting atmosphere.

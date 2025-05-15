@@ -1,9 +1,12 @@
 "use client";
+
 import Image from "next/image";
 import React, { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 const MenuCarousel = () => {
   const [current, setCurrent] = useState(0);
+  const [direction, setDirection] = useState(0);
 
   const burgers = [
     {
@@ -32,16 +35,17 @@ const MenuCarousel = () => {
     },
   ];
 
-  const prev = () =>
+  const prev = () => {
+    setDirection(-1);
     setCurrent((prev) => (prev - 1 + burgers.length) % burgers.length);
-  const next = () => setCurrent((prev) => (prev + 1) % burgers.length);
-
-  const getBurger = (offset: number) => {
-    const index = (current + offset + burgers.length) % burgers.length;
-    return burgers[index];
   };
 
-  const displayed = [getBurger(-1), getBurger(0), getBurger(1)];
+  const next = () => {
+    setDirection(1);
+    setCurrent((prev) => (prev + 1) % burgers.length);
+  };
+
+  const burger = burgers[current];
 
   return (
     <div className="w-full bg-[#3a6ecf] text-white py-20 relative overflow-hidden">
@@ -55,33 +59,33 @@ const MenuCarousel = () => {
         </div>
       </button>
 
-      {/* Desktop / Tablet: 3 Cards */}
+      {/* Desktop View (unchanged) */}
       <div className="hidden md:flex justify-center items-center gap-6 transition-transform duration-700 ease-in-out">
-        {displayed.map((burger, index) => {
-          const isCenter = index === 1;
+        {[-1, 0, 1].map((offset, index) => {
+          const i = (current + offset + burgers.length) % burgers.length;
+          const b = burgers[i];
+          const isCenter = offset === 0;
+
           return (
             <div
-              key={index}
+              key={i}
               className={`w-72 transition-all duration-500 transform ${
                 isCenter ? "scale-110" : "scale-95 opacity-70"
               } flex flex-col items-center text-center`}
             >
-              <div className="relative">
-                <Image
-                  src={burger.image}
-                  alt={burger.title}
-                  width={300}
-                  height={300}
-                  className="w-72 h-60 object-contain"
-                />
-              </div>
-              <h2 className="text-xl font-extrabold mt-4">{burger.title}</h2>
+              <Image
+                src={b.image}
+                alt={b.title}
+                width={300}
+                height={300}
+                className="w-72 h-60 object-contain"
+              />
+              <h2 className="text-xl font-extrabold mt-4">{b.title}</h2>
               <p className="text-sm mt-2">
-                <span className="font-bold">INGREDIENTS:</span>{" "}
-                {burger.ingredients}
+                <span className="font-bold">INGREDIENTS:</span> {b.ingredients}
               </p>
               <div className="mt-2 font-bold text-[#fad345]">
-                {burger.prices.map((p, idx) => (
+                {b.prices.map((p, idx) => (
                   <div key={idx}>{p}</div>
                 ))}
               </div>
@@ -90,31 +94,37 @@ const MenuCarousel = () => {
         })}
       </div>
 
-      {/* Mobile: 1 Card */}
-      <div className="block md:hidden px-6 transition-all duration-700 ease-in-out">
-        <div className="flex flex-col items-center text-center">
-          <div className="relative">
+      {/* Mobile View (Animated) */}
+      <div className="block md:hidden px-6 h-[400px] relative">
+        <AnimatePresence mode="wait" custom={direction}>
+          <motion.div
+            key={current}
+            custom={direction}
+            initial={{ x: direction > 0 ? 300 : -300, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            exit={{ x: direction > 0 ? -300 : 300, opacity: 0 }}
+            transition={{ duration: 0.5 }}
+            className="absolute w-full flex flex-col items-center text-center"
+          >
             <Image
-              src={burgers[current].image}
-              alt={burgers[current].title}
+              src={burger.image}
+              alt={burger.title}
               width={288}
               height={240}
               className="w-72 h-60 object-contain"
             />
-          </div>
-          <h2 className="text-xl font-extrabold mt-4">
-            {burgers[current].title}
-          </h2>
-          <p className="text-sm mt-2">
-            <span className="font-bold">INGREDIENTS:</span>{" "}
-            {burgers[current].ingredients}
-          </p>
-          <div className="mt-2 font-bold text-[#fad345]">
-            {burgers[current].prices.map((p, idx) => (
-              <div key={idx}>{p}</div>
-            ))}
-          </div>
-        </div>
+            <h2 className="text-xl font-extrabold mt-4">{burger.title}</h2>
+            <p className="text-sm mt-2">
+              <span className="font-bold">INGREDIENTS:</span>{" "}
+              {burger.ingredients}
+            </p>
+            <div className="mt-2 font-bold text-[#fad345]">
+              {burger.prices.map((p, idx) => (
+                <div key={idx}>{p}</div>
+              ))}
+            </div>
+          </motion.div>
+        </AnimatePresence>
       </div>
 
       {/* Right Arrow */}

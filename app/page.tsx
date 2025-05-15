@@ -12,7 +12,7 @@ const page = () => {
       <Hero />
       <Feature />
       <Reviews />
-      <ReservationForm />
+      <Form />
     </div>
   );
 };

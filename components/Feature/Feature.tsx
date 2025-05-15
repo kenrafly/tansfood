@@ -1,11 +1,17 @@
-import Image from "next/image";
+"use client";
 import React from "react";
 import Carousel from "../Carousel/Carousel";
+import { motion } from "framer-motion";
 
 const Feature = () => {
   return (
     <section className="h-vw bg-[#3a6ecf] flex flex-col items-center lg:flex-row">
-      <div className="dislay-flex flex-col mt-6 px-10 md:px-28">
+      <motion.div
+        initial={{ opacity: 0, x: -100 }}
+        whileInView={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.9 }}
+        className="dislay-flex flex-col mt-6 px-10 md:px-28"
+      >
         <h1 className="text-5xl md:text-6xl text-[#fad345] font-extrabold mb-4">
           Experience Our Fresh, Modern Look and Delicious Culinary Offerings
         </h1>
@@ -31,10 +37,16 @@ const Feature = () => {
             </p>
           </div>
         </div>
-      </div>
-      <div className="flex justify-center items-center w-96 pr-8 ">
+      </motion.div>
+      <motion.div
+        initial={{ opacity: 0, x: 100 }}
+        whileInView={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.9 }}
+        animate={{}}
+        className="flex justify-center items-center w-96 pr-8 "
+      >
         <Carousel />
-      </div>
+      </motion.div>
     </section>
   );
 };
